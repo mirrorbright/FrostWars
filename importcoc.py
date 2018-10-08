@@ -29,14 +29,22 @@ output = csv.writer(outputFile) #create a csv.write
 #output.writerow(data[0].keys())  # header row
 
 sheet = client.open("Frost Wars")
-warWorksheet=sheet.add_worksheet("Next War",1,1)
+
+try:
+    warWorksheet = sheet.worksheet(data["startTime"][:8].encode('utf-8'))
+except:
+    warWorksheet = sheet.add_worksheet(data["startTime"][:8].encode('utf-8'),1,1)
+
+warWorksheet = sheet.worksheet(data["startTime"][:8].encode('utf-8'))
+warWorksheet.clear()
 
 #Opponent Name
 output.writerow([data["opponent"]["tag"].encode('utf-8'),data["opponent"]["name"].encode('utf-8'),data["startTime"].encode('utf-8')])
 output.writerow("")
 
 warWorksheet.append_row([data["opponent"]["tag"].encode('utf-8'),data["opponent"]["name"].encode('utf-8'),data["startTime"].encode('utf-8')])
-warWorksheet.append_row("")
+warWorksheet.append_row(["","",""])
+
 
 #output.writerow(data["opponent"]["tag"])
 #Date
