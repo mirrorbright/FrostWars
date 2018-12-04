@@ -3,14 +3,19 @@ import json
 import csv
 import sys
 import gspread
+import pymongo
 from oauth2client.service_account import ServiceAccountCredentials
+
+#init mongodb
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+wardb = myclient["warDB"]
+currentWar = wardb["wars"]
 
 scope = [
     'https://spreadsheets.google.com/feeds',
     'https://www.googleapis.com/auth/drive'
 ]
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-client = gspread.authorize(creds)
 
 filename = 'apikey'
 f = open(filename, 'r')
@@ -27,6 +32,20 @@ outputFile = open("war.csv", 'wb') #load csv file
 output = csv.writer(outputFile) #create a csv.write
 #outputFile.write(r.text.encode('utf-8'))
 #output.writerow(data[0].keys())  # header row
+
+retExisting = currentWar.find_one_and_update(
+        {"endTime":data["endTime"]},
+        {'$set':data},
+        {}
+)
+
+if retExisting is None:
+    #insert instead of update
+    currentWar.insert_one(data)
+    print("Insert war endtime "+data["endTime"])
+else:
+    print("Update war endtime "+data["endTime"])
+
 
 sheet = client.open("Frost Wars")
 
