@@ -16,6 +16,7 @@ scope = [
     'https://www.googleapis.com/auth/drive'
 ]
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+client = gspread.authorize(creds)
 
 filename = 'apikey'
 f = open(filename, 'r')
