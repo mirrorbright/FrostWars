@@ -47,7 +47,7 @@ index=0
 for row in data["items"]:
     r2 = requests.get(url2 + urllib.quote(row["tag"]), headers=headers)
     data2 = json.loads(r2.text.encode('utf-8'))
-    output.writerow([row["tag"],row["name"],data2["townHallLevel"],row["donations"]])
+    output.writerow([row["tag"],row["name"].encode('utf-8'),data2["townHallLevel"],row["donations"]])
 
     
     cell_list[index].value=row["tag"]
