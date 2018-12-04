@@ -64,7 +64,7 @@ for row in data["items"]:
     clanMember["townHallLevel"]=data2["townHallLevel"]
     clanMember["active"]=True
 
-    #allTags.append(clanMember["tag"])
+    allTags.append(clanMember["tag"])
 
     retExisting = myClan.find_one_and_update(
             {"tag":clanMember["tag"]},
@@ -84,9 +84,8 @@ for row in data["items"]:
 # Now use all tags from the API call (saved in a query), query clanMember collection, returning anything that is set to active not in the API call.
 # Those that remain are no longer active. Set them to removed, and set removedDate.
 
-allTags=["#29Y902UV8"]
 
-listOfRemovedMembers = myClan.find({"active":True, "tag":{'$in':allTags}})
+listOfRemovedMembers = myClan.find({"active":True, "tag":{'$nin':allTags}})
 
 for inactive in listOfRemovedMembers:
     inactive["active"]=False
